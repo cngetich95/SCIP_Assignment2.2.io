@@ -1,37 +1,58 @@
 ## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/cngetich95/SCIP_Assignment2.2.io/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+;; SICP 2.2
+;; **Question**
+;; Exercise 2.2.  Consider the problem of representing line segments
+;; in a plane. Each segment is represented as a pair of points: a
+;; starting point and an ending point. Define a constructor
+;; make-segment and selectors start-segment and end-segment that
+;; define the representation of segments in terms of
+;; points. Furthermore, a point can be represented as a pair of
+;; numbers: the x coordinate and the y coordinate. Accordingly,
+;; specify a constructor make-point and selectors x-point and y-point
+;; that define this representation. Finally, using your selectors and
+;; constructors, define a procedure midpoint-segment that takes a line
+;; segment as argument and returns its midpoint (the point whose
+;; coordinates are the average of the coordinates of the
+;; endpoints). To try your procedures, you'll need a way to print
+;; points:
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+;; (define (print-point p)
+;;   (newline)
+;;   (display "(")
+;;   (display (x-point p))
+;;   (display ",")
+;;   (display (y-point p))
+;;   (display ")"))
 
-### Markdown
+;; **Solution** ------------------------------------------------------------
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+(define make-segment cons)
+(define start-segment car)
+(define end-segment cdr)
 
-```markdown
-Syntax highlighted code block
+(define make-point cons)
+(define x-point car)
+(define y-point cdr)
 
-# Header 1
-## Header 2
-### Header 3
+(define (sum . l) (if (zero? (length l)) 0 (+ (car l) (apply sum (cdr l)))))
+(define (average . l) (/ (apply + l) (length l)))
 
-- Bulleted
-- List
+(define point->coordinate-accessors (list x-point y-point))
+(define (midpoint seg)
+  (apply make-point (map (lambda (point->coordinate)
+                           (average (point->coordinate (start-segment seg))
+                                    (point->coordinate (end-segment seg))))
+                         point->coordinate-accessors)))
 
-1. Numbered
-2. List
+(define (print-point p)
+  (newline)
+  (display "(")
+  (display (x-point p))
+  (display ",")
+  (display (y-point p))
+  (display ")"))
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/cngetich95/SCIP_Assignment2.2.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+(define seg-1 (make-segment (make-point 3 4)
+                            (make-point 8 10)))
+(print-point (midpoint seg-1))
